@@ -1,0 +1,41 @@
+# Credentials & secrets — never commit, ever (see CLAUDE.md "What NOT to commit")
+.env
+.env.*
+!.env.example
+**/connections/*.env
+**/connections/*.secret
+*.pem
+*.key
+credentials.json
+
+# Terraform state — holds resolved secrets/outputs in plaintext (Fasa 3+)
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+.terraform/
+.terraform.lock.hcl
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Airflow runtime (Fasa 2 — docker-compose local hub)
+airflow/logs/
+airflow/airflow.db
+airflow/airflow.cfg
+airflow/webserver_config.py
+
+# Logs
+*.log
+logs/
+
+# OS / editor noise
+.DS_Store
+.vscode/
+*.swp
