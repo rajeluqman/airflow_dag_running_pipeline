@@ -5,8 +5,8 @@
 ## ▶ RESUME HERE (checkpoint — read this before reading source code)
 
 **Date:** 2026-06-30  
-**Branch:** `framework/fasa-1-scaffold`  
-**Fasa:** 1 scaffold complete — gate suite green, PR open for Opus review  
+**Branch:** `framework/fasa-1-scaffold` → **PR #1** open for Opus review  
+**Fasa:** 1 scaffold complete — all gates green, PR #1 at github.com/rajeluqman/airflow_dag_running_pipeline/pull/1  
 
 ### What was just done
 
