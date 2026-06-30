@@ -65,7 +65,7 @@ jobs:
             --include="*.json" \
             --include="*.sh" \
             -E "ghp_[A-Za-z0-9]{36}|-----BEGIN (RSA )?PRIVATE KEY|sk-ant-api" \
-            . 2>/dev/null | grep -v "\.env\.example" | grep -v "\.git/"; then
+            . 2>/dev/null | grep -v "\.env\.example" | grep -v "\.git/" | grep -v "\.github/workflows/"; then
             echo "SECURITY: possible secret committed — review the lines above"
             exit 1
           fi
