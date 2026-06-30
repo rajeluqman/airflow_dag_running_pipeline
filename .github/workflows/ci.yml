@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "framework/*"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  gates:
+    name: Gate suite
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install lint tools
+        run: pip install --quiet ruff
+
+      - name: Lint (ruff)
+        run: ruff check .
+
+      - name: Syntax check — all Python files
+        run: |
+          find . -name "*.py" -not -path "*/.git/*" -not -path "*/__pycache__/*" \
+            | sort | xargs python -m py_compile
+          echo "py_compile: all files OK"
+
+      - name: Gate — cross_stack_contract
+        run: python tests/cross_stack_contract.py
+
+      - name: Gate — saboteur_containment_contract
+        run: python tests/saboteur_containment_contract.py
+
+      - name: Gate — cost_guard
+        run: python tests/cost_guard.py
+
+      - name: Gate — env_promotion_contract
+        run: python tests/env_promotion_contract.py
+
+      - name: Gate — doc_reference_contract
+        run: python tests/doc_reference_contract.py
+
+      - name: Gate — gen_repo_map (stale check)
+        run: python scripts/gen_repo_map.py --check
+
+      - name: Gate — simulation isolation
+        run: python simulation/check_isolation.py
+
+      - name: Committed-secret scan
+        shell: bash
+        run: |
+          # Scan committed files for patterns that indicate real secrets.
+          # Excludes .env.example (documented placeholder, not real credentials).
+          if grep -rn \
+            --include="*.py" \
+            --include="*.yml" \
+            --include="*.yaml" \
+            --include="*.json" \
+            --include="*.sh" \
+            -E "ghp_[A-Za-z0-9]{36}|-----BEGIN (RSA )?PRIVATE KEY|sk-ant-api" \
+            . 2>/dev/null | grep -v "\.env\.example" | grep -v "\.git/" | grep -v "\.github/workflows/"; then
+            echo "SECURITY: possible secret committed — review the lines above"
+            exit 1
+          fi
+          echo "Secret scan: clean"
