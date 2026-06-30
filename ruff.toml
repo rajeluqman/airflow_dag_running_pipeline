@@ -1,0 +1,10 @@
+line-length = 120
+
+[lint]
+# Default: E4, E7, E9, F. Keep defaults; add per-file ignores where the pattern is
+# intentional (DAG sys.path trick, not a bug).
+[lint.per-file-ignores]
+# DAGs must manipulate sys.path before importing airflow providers — E402 is expected.
+"airflow/dags/*.py" = ["E402"]
+# __init__.py files are intentionally empty stubs.
+"**/__init__.py" = ["F401"]
